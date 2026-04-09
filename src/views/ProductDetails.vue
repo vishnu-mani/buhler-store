@@ -10,6 +10,13 @@
                 <div class="font-bold text-[1.2em]">{{ product.name }}</div>
                 <div class="italic">{{ product.displayCategory }}</div>
                 <div class="">{{ formatPrice(product.price) }}</div>
+                <div class="" v-if="productCountInCart">{{ productCountInCart }} {{product.name}} in the cart</div>
+                <select v-model="quantity" class="border rounded">
+                    <option value="">Select Quantity</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                </select>
                 <a class="flex gap-1 mt-auto cursor-pointer" @click="addToCart">
                     <Icon name="cart" />
                     Add to Cart
@@ -21,7 +28,7 @@
 
 <script setup>
 import { useProductStore } from '@/stores/productStore';
-import { computed, onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router'
 import { formatPrice } from '@/utils/commonUtil';
 
@@ -31,12 +38,11 @@ const route = useRoute()
 const router = useRouter()
 const productStore = useProductStore();
 const product = computed(() => productStore.getProductById(route.params.id))
+const productCountInCart = computed(() => productStore.getProductQuantityInCart(product.value.id))
 
+const quantity = ref()
 const addToCart = () => {
-    productStore.addToCart(product.value)
+    productStore.addToCart(product.value, quantity.value ?? 1)
+    quantity.value = null;
 }
-
-onMounted(() => {
-    
-})
 </script>

@@ -6,7 +6,7 @@
         <div class="flex flex-col justify-between bg-[#DADADA] text-[#009B91] text-[12px] px-5 py-1 h-18 shrink-0">
             <div class="font-bold">{{ product.name }}</div>
             <div class="flex items-center justify-between">
-                <div class="">{{ formatPrice(product.price) }}</div>
+                <div class="font-bold">{{ productCountInCart }} {{ formatPrice(product.price) }}</div>
                 <a @click.stop="addToCart" class="">
                     <Icon name="cart"/>
                 </a>
@@ -18,6 +18,7 @@
 <script setup>
 import { useProductStore } from '@/stores/productStore';
 import { formatPrice } from '@/utils/commonUtil';
+import { computed } from 'vue';
 
 const props = defineProps({
     product: {
@@ -27,8 +28,8 @@ const props = defineProps({
 })
 
 const productStore = useProductStore()
-
 const addToCart = () => {
     productStore.addToCart(props.product)
 }
+const productCountInCart = computed(() => productStore.getProductQuantityInCart(product.value.id))
 </script>
